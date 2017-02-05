@@ -33,10 +33,6 @@ static void cleanup(void);
 static int init(void);
 
 // External
-extern int write_vaddr_tcp(void *, size_t);
-extern int setup_tcp(void);
-extern void cleanup_tcp(void);
-
 extern int write_vaddr_disk(void *, size_t);
 extern int setup_disk(void);
 extern void cleanup_disk(void);
@@ -101,7 +97,7 @@ int init_module (void)
         return -EINVAL;
     }
 
-    method = (sscanf(path, "tcp:%d", &port) == 1) ? LIME_METHOD_TCP : LIME_METHOD_DISK;
+    method = LIME_METHOD_DISK;
     return init();
 }
 
@@ -239,22 +235,22 @@ static void write_range(struct resource * res) {
             break;
         }
 #endif
-        
+
     }
 }
 
 static ssize_t write_vaddr(void * v, size_t is) {
     return RETRY_IF_INTURRUPTED(
-        (method == LIME_METHOD_TCP) ? write_vaddr_tcp(v, is) : write_vaddr_disk(v, is)
+        write_vaddr_disk(v, is)
     );
 }
 
 static int setup(void) {
-    return (method == LIME_METHOD_TCP) ? setup_tcp() : setup_disk();
+    return setup_disk();
 }
 
 static void cleanup(void) {
-    return (method == LIME_METHOD_TCP) ? cleanup_tcp() : cleanup_disk();
+    return cleanup_disk();
 }
 
 void cleanup_module(void)

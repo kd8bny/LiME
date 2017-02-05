@@ -21,7 +21,7 @@
 
 
 obj-m := lime.o
-lime-objs := tcp.o disk.o main.o
+lime-objs := disk.o main.o
 
 KVER ?= $(shell uname -r)
 
@@ -30,16 +30,16 @@ PWD := $(shell pwd)
 .PHONY: modules modules_install clean distclean debug
 
 default:
-	$(MAKE) -C /lib/modules/$(KVER)/build M="$(PWD)" modules
+	$(MAKE) -C /lib/modules/$(KVER)/build CONFIG_DEBUG_INFO=y M="$(PWD)" modules
+	dwarfdump -di lime.ko > $(KVER).dwarf
 	strip --strip-unneeded lime.ko
-	mv lime.ko lime-$(KVER).ko
 
 debug:
 	KCFLAGS="-DLIME_DEBUG" $(MAKE) -C /lib/modules/$(KVER)/build M="$(PWD)" modules
 	strip --strip-unneeded lime.ko
 	mv lime.ko lime-$(KVER).ko
 
-modules:    main.c disk.c tcp.c lime.h
+modules:    main.c disk.c lime.h
 	$(MAKE) -C /lib/modules/$(KVER)/build M="$(PWD)" $@
 	strip --strip-unneeded lime.ko
 

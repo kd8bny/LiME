@@ -31,7 +31,6 @@ PWD := $(shell pwd)
 
 default:
 	$(MAKE) -C /lib/modules/$(KVER)/build CONFIG_DEBUG_INFO=y M="$(PWD)" modules
-	mv lime.ko lime-$(KVER).ko
 
 debug:
 	KCFLAGS="-DLIME_DEBUG" $(MAKE) -C /lib/modules/$(KVER)/build M="$(PWD)" modules

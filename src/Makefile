@@ -30,9 +30,7 @@ PWD := $(shell pwd)
 .PHONY: modules modules_install clean distclean debug
 
 default:
-	$(MAKE) -C /lib/modules/$(KVER)/build M="$(PWD)" modules
-	strip --strip-unneeded lime.ko
-	mv lime.ko lime-$(KVER).ko
+	$(MAKE) -C /lib/modules/$(KVER)/build CONFIG_DEBUG_INFO=y M="$(PWD)" modules
 
 debug:
 	KCFLAGS="-DLIME_DEBUG" $(MAKE) CONFIG_DEBUG_SG=y -C /lib/modules/$(KVER)/build M="$(PWD)" modules
